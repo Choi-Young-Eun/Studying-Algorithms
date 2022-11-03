@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Nov3 {
     public static void main(String[] args){
-        // 2문제 풀이 완료
+        // 3문제 풀이 완료
     }
 
     long q_15596_sum(int[] a) {
@@ -39,4 +39,26 @@ public class Nov3 {
         }
     }
 
+    public void q_1065(){
+        Scanner scn=new Scanner(System.in);
+        int n=scn.nextInt();
+        int count,dif;
+        if(n<100) count=n;
+        else {
+            count = 99;
+
+            for(int i=100;i<=n;i++){
+                if(i/10%10==0){
+                    continue;
+                }else {
+                    dif=i/10%10-i/100;
+                    if(i%10-i/10%10==dif){
+                        count++;
+                    }
+                }
+            }
+        }
+
+        System.out.println(count);
+    }
 }
