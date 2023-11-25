@@ -1,3 +1,5 @@
+package In2022.Nov_11;
+
 import java.util.*;
 
 public class Nov3 {
