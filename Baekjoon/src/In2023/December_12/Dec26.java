@@ -12,10 +12,10 @@ public class Dec26 {
     static int[][] tiredArr;
     static int tired;
     public static void main(String[] args){
-        //1문제 풀이 완료 : 완전 탐색(프로그래머스:Lev2-소수찾기), 1문제 풀이 중 : 완전 탐색(프로그래머스:Lev2-피로도)
+        //2문제 풀이 완료 : 완전 탐색(프로그래머스:Lev2-소수찾기, 프로그래머스:Lev2-피로도)
     }
 
-    public int solution(int k, int[][] dungeons) {
+    public int tired_solution(int k, int[][] dungeons) {
         /*
         ** 문제 이해하기
         -입력 값 설명
@@ -36,6 +36,13 @@ public class Dec26 {
         -지금 상태에서 갈 수 있는 던전은 하루에 한 번 방문할 수 있으므로 방문한 던전을 체크하기 위한 visit 배열 필요
         -배열을 끝까지 돌거나, 남은 피가 0인 경우 해당 케이스는 break
             -> 그리고 현재의 max값과 비교해서 더 많은 던전 수를 돌았으면 max값을 현재 값으로 업데이트
+
+         ** 12월 27일 풀이 완료
+         -놓치고 있던 부분
+         : visit만 reset하고 tired값을 초기화 하지 않고 있었음.
+         : start_game()에서도 탐색 후에는 횟수를 처음 받은 횟수로 돌려 놓아야 다음 탐색도 동일한 조건에서 할 수 있음
+            -> 그래서 계산은 round로 받아서 하고 매번 탐색이 끝난 후에는 이번 탐색 최종값 rouond와 최대값 max를 비교하여 max업데이트
+            -> visit과 tired 초기화시 round도 기존 crt로 되돌려주기
          */
         int answer = -1;
         int size = dungeons.length;
@@ -44,26 +51,35 @@ public class Dec26 {
         for(int i=0; i<size; i++){
             tired = k;
             visit[i] = true;
-            int count = start_game(0);
+            tired -= tiredArr[i][1];
+            int count = start_game(1);
             if(answer < count)
                 answer = count;
             visit[i] = false;
+            tired -= tiredArr[i][1];
         }
         return answer;
     }
 
     private static int start_game(int cut){
+        int max = 0;
+        int round = cut;
         for(int i=0; i<tiredArr.length; i++){
             if(visit[i])
                 continue;
             if(tiredArr[i][0] <= tired) {
                 visit[i] = true;
                 tired -= tiredArr[i][1];
-                cut = start_game(++cut);
+                round = start_game(++round);
+                if(max < round)
+                    max = round;
                 visit[i] = false;
+                tired += tiredArr[i][1];
+                round = cut;
             }
         }
-        return cut;
+        if(max < round) return round;
+        else return max;
     };
 
 
