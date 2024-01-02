@@ -11,24 +11,29 @@ public class Dec29 {
     //단어변환
     static int len;
     public static void main(String[] args) {
-        //1문제 풀이 완료 : DFS(프로그래머스:Lev2-타겟넘버), 1문제 풀이 중 : BFS(프로그래머스:Lev2-단어변환)
+        //2문제 풀이 완료 : DFS(프로그래머스:Lev2-타겟넘버, 프로그래머스:Lev3-단어변환)
     }
 
-    public static int word_translate_solution(String begin, String target, String[] words) { //fail - 런타임 에러
+    public static int word_translate_solution(String begin, String target, String[] words) {
         /*
-        인자로 받은 초기 단어를 큐에 삽입 //인덱스를 담기
-        탐색 횟수 0부터 시작
-        int형 횟수배열 만들기 //처음엔 다 0으로 초기화
-        int형 result 0으로 초기화
-        (while문 진행) : 큐가 비어있을 때까지 or 현재 단어가 타겟 단어일때
-        지금 단어 업데이트 //호출 시에는 begin을 주겠죵
-        처음부터 돌면서
-        비교하지 않은 단어 중 지금 단어에서 한가지만 다른 걸 담기
-        담은 단어들 비교했다고 표시하기 //boolean[] done`
+        -아이디어
+        1. 인자로 받은 초기 단어에서 갈 수 있는 단어를 큐에 삽입
+        : 큐에는 인덱스가 담김
+        : 방문 체크 - done[인덱스] = true
+        : 이동 횟수 체크 - round[인덱스] = 1
+        2. while : 큐가 비어있을 때까지 or 현재 단어가 타겟 단어일때
+            1) queue.remove() : 지금 단어 업데이트
+            2) compare_word() : 처음부터 돌면서 방문하지 않은 단어 중 지금 단어에서 한가지만 다른 걸 담기
+            3) 담은 단어들의 경우 방문 체크 및 이동 횟수 업데이트
+        3. 만약 현재 idx의 단어가 목표 단어라면 이동 횟수 값인 round[idx] 반환
+        4. 아니라면 배열 내의 단어로는 목표 단어에 도달할 수 없으므로 0 반환
+
+        * fail - 런타임 에러
+        : 런타임 에러가 난 이유가 idx의 초기값을 -1로 주었기 때문
+        : 만약 초기 단어에서 주어진 단어로 변경가능한 케이스가 없는 경우 while을 넘어가고 바로 idx 위치의 단어와 목표단어가 동일한지 확인함
+        : 이때 배열의 인덱스 값은 0부터 시작하기 때문에 에러가 나는 것
+        (해결) idx 초기 값을 0으로 설정
         */
-        //먼저 시작 단어에서 갈 수 있는 단어 담기
-        //만약 큐가 비었다면 0 반환
-        //그렇지 않다면 while 실행
         boolean[] done = new boolean[words.length];
         int[] round = new int[words.length];
         Queue<Integer> queue = new LinkedList<>();
@@ -40,7 +45,7 @@ public class Dec29 {
                 round[i] = 1;
             }
         }
-        int idx = -1;
+        int idx = 0;
         while(!queue.isEmpty()){
             idx = queue.remove();
             if(words[idx].equals(target))
@@ -60,6 +65,11 @@ public class Dec29 {
     }
 
     private static boolean compare_word(String begin, String word) {
+        /*
+        1. 두 단어를 비교하고 서로 다른 부분의 갯수를 카운트
+        2. 한 자리만 다르다면 변경할 수 있는 단어이므로 true 반환
+        3. 그렇지 않으면 변경할 수 없는 단어이므로 false 반환
+        */
         int size = 0;
         for(int i=0; i<len; i++){
             if(begin.charAt(i) != word.charAt(i)) {
